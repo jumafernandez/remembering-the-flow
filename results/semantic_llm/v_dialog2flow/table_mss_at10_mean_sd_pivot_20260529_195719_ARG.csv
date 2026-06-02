@@ -1,0 +1,4 @@
+variant,estatico,estatico,estatico,dinamico,dinamico,dinamico
+index_type,IVF,HNSW,IVFPQ,IVF,HNSW,IVFPQ
+embedding_base,,,,,,
+Dialog2Flow,3.401 ± 0.759,3.377 ± 0.757,3.315 ± 0.825,3.672 ± 0.647,3.664 ± 0.643,3.593 ± 0.707

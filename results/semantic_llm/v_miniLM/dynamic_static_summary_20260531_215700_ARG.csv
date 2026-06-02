@@ -1,0 +1,4 @@
+embedding_base,index_type,n_queries,mean_static_mss_at10,mean_dynamic_mss_at10,mean_delta_dynamic_static,median_delta_dynamic_static,sd_delta_dynamic_static,n_dynamic_better,n_static_better,n_ties,pct_dynamic_better,pct_static_better,pct_ties,wilcoxon_statistic,wilcoxon_p_value
+MiniLM,HNSW,100,3.416,3.334,-0.082,0.0,0.9469,48,46,6,0.48,0.46,0.06,2044.0,0.477
+MiniLM,IVF,100,3.399,3.315,-0.084,0.0,0.9293,47,46,7,0.47,0.46,0.07,2028.5,0.5473
+MiniLM,IVFPQ,100,3.346,3.234,-0.112,0.0,0.9679,44,48,8,0.44,0.48,0.08,1875.5,0.3047

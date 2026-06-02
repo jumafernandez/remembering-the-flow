@@ -1,0 +1,2 @@
+embedding_base,IVF,HNSW,IVFPQ
+MiniLM,0.47,0.48,0.44

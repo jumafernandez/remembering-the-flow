@@ -1,0 +1,2 @@
+embedding_base,IVF,HNSW,IVFPQ
+Dialog2Flow,0.63,0.67,0.57

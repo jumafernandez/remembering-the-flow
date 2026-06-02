@@ -1,0 +1,4 @@
+variant,estatico,estatico,estatico,dinamico,dinamico,dinamico
+index_type,IVF,HNSW,IVFPQ,IVF,HNSW,IVFPQ
+embedding_base,,,,,,
+MiniLM,0.758,0.741,0.803,0.754,0.758,0.769

@@ -1,0 +1,7 @@
+embedding_base,variant,index_type,n_queries,mean_semantic_score_global_at10,sd_semantic_score_global_at10,se_semantic_score_global_at10,ci95_semantic_score_global_at10,mean_semantic_score_at10,sd_semantic_score_at10,mean_functional_score_at10,sd_functional_score_at10,mean_memory_score_at10,sd_memory_score_at10
+MiniLM,dinamico,HNSW,100,3.334,0.758,0.076,0.149,3.358,0.778,3.333,0.758,3.306,0.76
+MiniLM,dinamico,IVF,100,3.315,0.754,0.075,0.148,3.339,0.767,3.312,0.753,3.29,0.749
+MiniLM,dinamico,IVFPQ,100,3.234,0.769,0.077,0.151,3.271,0.786,3.23,0.769,3.216,0.758
+MiniLM,estatico,HNSW,100,3.416,0.741,0.074,0.145,3.412,0.74,3.469,0.776,3.419,0.748
+MiniLM,estatico,IVF,100,3.399,0.758,0.076,0.149,3.386,0.747,3.449,0.756,3.398,0.757
+MiniLM,estatico,IVFPQ,100,3.346,0.803,0.08,0.157,3.35,0.799,3.402,0.814,3.365,0.821

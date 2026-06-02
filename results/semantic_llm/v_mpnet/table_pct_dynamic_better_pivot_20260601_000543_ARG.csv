@@ -1,0 +1,2 @@
+embedding_base,IVF,HNSW,IVFPQ
+MPNet,0.48,0.48,0.41

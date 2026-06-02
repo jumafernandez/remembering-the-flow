@@ -1,0 +1,4 @@
+embedding_base,index_type,n_queries,mean_static_mss_at10,mean_dynamic_mss_at10,mean_delta_dynamic_static,median_delta_dynamic_static,sd_delta_dynamic_static,n_dynamic_better,n_static_better,n_ties,pct_dynamic_better,pct_static_better,pct_ties,wilcoxon_statistic,wilcoxon_p_value
+MPNet,HNSW,100,3.358,3.31,-0.048,0.0,0.9373,48,45,7,0.48,0.45,0.07,2113.5,0.7826
+MPNet,IVF,100,3.381,3.309,-0.072,0.0,0.9684,48,46,6,0.48,0.46,0.06,2102.0,0.6225
+MPNet,IVFPQ,100,3.368,3.197,-0.171,-0.1,0.8975,41,52,7,0.41,0.52,0.07,1739.0,0.087

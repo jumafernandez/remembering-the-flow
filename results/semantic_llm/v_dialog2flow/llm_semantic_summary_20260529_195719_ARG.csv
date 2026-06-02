@@ -1,0 +1,7 @@
+embedding_base,variant,index_type,n_queries,mean_semantic_score_global_at10,sd_semantic_score_global_at10,se_semantic_score_global_at10,ci95_semantic_score_global_at10,mean_semantic_score_at10,sd_semantic_score_at10,mean_functional_score_at10,sd_functional_score_at10,mean_memory_score_at10,sd_memory_score_at10
+Dialog2Flow,dinamico,HNSW,100,3.664,0.643,0.064,0.126,3.687,0.637,3.669,0.641,3.659,0.647
+Dialog2Flow,dinamico,IVF,100,3.672,0.647,0.065,0.127,3.704,0.621,3.683,0.65,3.664,0.652
+Dialog2Flow,dinamico,IVFPQ,100,3.593,0.707,0.071,0.138,3.605,0.706,3.599,0.713,3.57,0.714
+Dialog2Flow,estatico,HNSW,100,3.377,0.757,0.076,0.148,3.384,0.755,3.411,0.771,3.395,0.766
+Dialog2Flow,estatico,IVF,100,3.401,0.759,0.076,0.149,3.395,0.76,3.423,0.761,3.4,0.761
+Dialog2Flow,estatico,IVFPQ,100,3.315,0.825,0.083,0.162,3.311,0.824,3.366,0.849,3.338,0.831
