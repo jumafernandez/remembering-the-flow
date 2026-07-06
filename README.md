@@ -1,303 +1,104 @@
-# 🔎 Búsqueda aproximada de vecinos sobre embeddings conversacionales
+# remembering-the-flow
 
-**Trabajo Final**  
-Curso: *Algoritmos Recientes para Búsqueda de Proximidad en Altas Dimensiones*  
-Doctorado en Ciencias de la Computación  
-Universidad Nacional de San Luis (UNSL)
+Companion code, notebooks, and experimental results for the paper **"Remembering
+the Flow: Retrieval with Calibrated Dynamic Turn Representations for
+Conversational Memory."**
 
-Docentes: **Edgar Chávez** y **Nora Reyes**
+Approximate nearest neighbor (**ANN**) retrieval over **static**, **cumulative**,
+and **calibrated-EMA** turn representations for **conversational memory** in
+task-oriented dialogue (TOD). Given a query turn, we retrieve similar situations
+from *other* dialogues (cross-dialogue retrieval) and ask which turn
+representation surfaces the most functionally plausible neighbors.
 
-Autor: **Juan Manuel Fernández**
+## Study at a glance
 
----
+Over a one-million-turn collection derived from **Dialog2Flow** (101,021 dialogues
+/ 1,000,023 turns) we compare three turn representations —
 
-## 📌 Descripción
+- **Static** — each turn encoded independently, `e_t`.
+- **Normalized cumulative** — `h_t = LayerNorm(h_{t-1} + e_t)`, reset per dialogue.
+- **EMA** — `h_t = LayerNorm((1 - α) · h_{t-1} + α · e_t)`, calibrated `α`.
 
-Este repositorio contiene el código, notebooks y resultados experimentales del trabajo final del curso *Algoritmos Recientes para Búsqueda de Proximidad en Altas Dimensiones*.
+— over three embedding spaces (`all-MiniLM-L6-v2`, `all-mpnet-base-v2`,
+`dialog2flow-joint-bert-base`), retrieved with FAISS indexes (FlatL2, IVF, HNSW,
+IVFPQ) and examined through three lenses: ANN fidelity/efficiency (Recall@k, QPS,
+memory), representation geometry (cosine, Overlap@k), and an LLM-assisted
+semantic–functional judgment (**MSS@10**) under a strict cross-dialogue protocol
+with held-out queries.
 
-El trabajo estudia la **búsqueda aproximada de vecinos** (*Approximate Nearest Neighbor Search*, ANN) sobre **embeddings estáticos y acumulativos** para memoria conversacional en diálogos orientados a tareas.
+**Main finding.** Accumulation does not help universally: over general-purpose
+encoders it does not improve semantic–functional retrieval, while over the
+conversation-aware Dialog2Flow space it does — and a calibrated EMA (`α = 0.6`)
+improves it further, holding under the cross-dialogue protocol and on held-out
+queries. The value of *remembering* depends on the base geometry.
 
-El objetivo principal es analizar cómo distintas representaciones vectoriales de situaciones conversacionales se comportan bajo índices ANN, considerando tres dimensiones:
+## Repository layout
 
-- eficiencia de recuperación;
-- estructura geométrica del espacio vectorial;
-- plausibilidad semántico-funcional de los vecinos recuperados.
-
----
-
-## 🧠 Resumen del experimento
-
-Se construyó una colección experimental a partir de **Dialog2Flow**, compuesta por:
-
-- **101.021 diálogos completos**;
-- **1.000.023 turnos conversacionales**.
-
-Sobre esta colección se evaluaron tres espacios de representación:
-
-1. `all-MiniLM-L6-v2`
-2. `all-mpnet-base-v2`
-3. `dialog2flow-joint-bert-base`
-
-Para cada espacio se consideraron dos variantes:
-
-- **embeddings estáticos**, donde cada turno se codifica de manera independiente;
-- **embeddings acumulativos**, donde se incorpora información secuencial del historial mediante:
-
-```text
-h_t = LayerNorm(h_{t-1} + e_t)
 ```
-
-La recuperación se evaluó con índices implementados en **FAISS**:
-
-- `FlatL2` como referencia exacta;
-- `IVF`;
-- `HNSW`;
-- `IVFPQ`.
-
----
-
-## 📊 Métricas evaluadas
-
-La evaluación combina tres niveles de análisis.
-
-### 1. Recuperación ANN
-
-Se evaluó la fidelidad de los índices aproximados respecto de la búsqueda exacta mediante:
-
-- `Recall@1`
-- `Recall@10`
-- `Recall@100`
-
-También se midieron:
-
-- QPS (*queries per second*);
-- tiempo de búsqueda;
-- tiempo de construcción del índice;
-- memoria estimada del índice.
-
-### 2. Geometría de representaciones acumulativas
-
-Para estudiar el efecto de la acumulación secuencial se calcularon:
-
-- similitud coseno entre embedding estático y acumulativo;
-- `Overlap@1`;
-- `Overlap@10`;
-- `Overlap@100`.
-
-### 3. Evaluación semántico-funcional
-
-Además de las métricas geométricas, se incorporó una evaluación asistida por LLM sobre los vecinos recuperados.
-
-Para cada consulta se evaluaron los vecinos del top-10 mediante un puntaje ordinal de 1 a 5. A partir de esos puntajes se calcularon:
-
-- `SS@10`: promedio semántico-funcional por consulta;
-- `MSS@10`: promedio global sobre la muestra de consultas;
-- comparación pareada entre variante estática y acumulativa.
-
----
-
-## 🧪 Hallazgo principal
-
-Los resultados muestran que la acumulación secuencial **no mejora de manera universal** cualquier espacio de embeddings.
-
-En particular:
-
-- sobre `MiniLM` y `MPNet`, la variante acumulativa no mejora la plausibilidad semántico-funcional de las vecindades recuperadas;
-- sobre `Dialog2Flow`, la variante acumulativa obtiene los valores más altos de `MSS@10` bajo `IVF`, `HNSW` e `IVFPQ`;
-- en `Dialog2Flow`, la variante acumulativa supera a la estática en la mayoría de las consultas evaluadas.
-
-Esto sugiere que la utilidad de las representaciones acumulativas depende de la **geometría del espacio base**, y que pueden resultar especialmente efectivas cuando se aplican sobre embeddings orientados a regularidades de flujos conversacionales.
-
----
-
-## 📁 Estructura del repositorio
-
-```text
-ANN-UNSL/
-├── data/
-│   └── README.md
-│
-├── notebooks/
-│   ├── notebook_01_carga_datos_dialog2flow.ipynb
-│   ├── notebook_01b_generacion_embeddings_dialog2flow.ipynb
-│   ├── notebook_01c_generacion_embeddings_generales.ipynb
-│   ├── notebook_02_benchmark_ann_embeddings.ipynb
-│   ├── notebook_03_estados_acumulativos.ipynb
-│   ├── notebook_04_analisis_resultados.ipynb
-│   └── notebook_05_evaluacion_semantica_llm.ipynb
-│
-├── resultados/
-│   ├── figuras/
-│   ├── semantic_llm/
-│   └── *.csv
-│
-├── paper/
-│   ├── main.tex
-│   ├── references.bib
-│   └── figures/
-│
+remembering-the-flow/
+├── notebooks/   # experimental pipeline (see table below)
+├── results/     # versioned outputs: benchmark_ann · geometry · semantic_llm · figures
+├── data/        # inputs (heavy artifacts gitignored; see data/README.md)
 ├── requirements.txt
-├── .gitignore
 └── README.md
 ```
 
-> Nota: algunas notebooks tienen variantes por embedding o por etapa experimental. Se conservaron para mantener trazabilidad de las ejecuciones utilizadas en el trabajo.
+### Pipeline (`notebooks/`)
 
----
+| Stage | Notebook(s) |
+|---|---|
+| Data loading | `notebook_01_carga_dialogos_dialog2flow` |
+| Turn embeddings | `notebook_01b_…` (Dialog2Flow) · `notebook_01c_…` (general: MiniLM/MPNet) |
+| ANN benchmark on static embeddings | `notebook_02_benchmark_ann_*` (one per space) |
+| Dynamic (cumulative) states + geometry | `notebook_03_estados_latentes_dinamicos_{D2F,miniLM}` |
+| Aggregate analysis & figures | `notebook_04_analisis_resultados` |
+| Semantic eval (static vs cumulative) | `notebook_05_evaluacion_semantica_llm_…` |
+| EMA family (`α` sweep) + analysis | `version_4/notebook_03_ema_…`, `…_04_…`, `…_05_…` |
+| Intra-dialogue contamination diagnostic | `version_4/notebook_06_diagnostico_contaminacion_intradialogo` |
+| Cross-dialogue evaluation, 500 queries | `version_5/notebook_07_evaluacion_semantica_500q_cross_dialogue` |
 
-## 💾 Datos e insumos
+The `version_4/` and `version_5/` folders hold the later experimental stages (EMA
+calibration and the cross-dialogue protocol) that extend the base pipeline.
 
-Los archivos de datos pesados **no se incluyen en el repositorio**.
+## Results
 
-La carpeta `data/` debe contener localmente los artefactos necesarios para reproducir los experimentos:
+`results/` is versioned for transparency:
 
-```text
-data/
-├── dialogs-2.0.pkl
-├── ids.npy
-├── embeddings_minilm.npy
-├── embeddings_mpnet.npy
-├── embeddings_dialog2flow.npy
-├── accumulative_embeddings_minilm.npy
-├── accumulative_embeddings_mpnet.npy
-└── accumulative_embeddings_dialog2flow.npy
-```
+- `benchmark_ann/` — ANN fidelity/efficiency: Recall@{1,10,100}, QPS, build time, memory.
+- `geometry/` — cosine(static, cumulative) and Overlap@k.
+- `semantic_llm/` — per-space LLM judgments: query metrics, MSS@10 ± SD summaries, paired static–cumulative deltas, and the raw query–neighbor score pairs.
+- `figures/` — figures generated from the results.
 
-Los archivos `.pkl` y `.npy` se excluyen de GitHub por tamaño.
+Heavy artifacts (embeddings `.npy`, FAISS indexes, `.pkl`) are **not** versioned;
+see [`data/README.md`](data/README.md).
 
----
-
-## 📓 Descripción de las notebooks
-
-### `notebook_01_*`
-
-Carga y preparación de datos a partir de Dialog2Flow.  
-Incluye la construcción de la colección experimental y la generación de embeddings base.
-
-### `notebook_02_*`
-
-Construcción y evaluación de índices ANN sobre embeddings estáticos.  
-Incluye `FlatL2`, `IVF`, `HNSW` e `IVFPQ`.
-
-### `notebook_03_*`
-
-Construcción de representaciones acumulativas normalizadas.  
-Calcula similitud entre representaciones estáticas y acumulativas, y medidas de superposición de vecindades.
-
-### `notebook_04_*`
-
-Análisis agregado de resultados experimentales y generación de figuras/tablas.
-
-### `notebook_05_*`
-
-Evaluación semántico-funcional asistida por LLM.  
-Calcula `MSS@10`, desvíos estándar y comparación pareada entre variantes estáticas y acumulativas.
-
----
-
-## 📈 Resultados incluidos
-
-El repositorio incluye salidas experimentales en la carpeta `resultados/`, tales como:
-
-- métricas ANN;
-- resultados geométricos;
-- evaluación semántico-funcional con LLM;
-- figuras utilizadas en el paper;
-- archivos CSV/JSONL de soporte para trazabilidad.
-
-Los datos pesados, embeddings e índices FAISS no se versionan.
-
----
-
-## ⚙️ Reproducción de los experimentos
-
-### 1. Clonar el repositorio
+## Reproduce
 
 ```bash
-git clone https://github.com/<usuario>/<repositorio>.git
-cd <repositorio>
-```
-
-### 2. Crear entorno virtual
-
-```bash
-python -m venv venv
-source venv/bin/activate
-```
-
-En Windows:
-
-```bash
-venv\Scripts\activate
-```
-
-### 3. Instalar dependencias
-
-```bash
+python -m venv venv && source venv/bin/activate    # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 4. Ubicar los datos
+Place the required inputs in `data/` (see `data/README.md`), then run the
+notebooks in order. If the embedding `.npy` files are already present, the
+generation stages can be skipped.
 
-Colocar los archivos requeridos en `data/`, según se detalla en `data/README.md`.
-
-### 5. Ejecutar notebooks
-
-Ejecutar las notebooks en el orden indicado:
-
-```text
-01 → 02 → 03 → 04 → 05
-```
-
----
-
-## 🔐 Uso de API key para evaluación LLM
-
-La evaluación semántico-funcional requiere una API key de OpenAI.
-
-No incluir claves en el repositorio.
-
-Puede configurarse en el entorno mediante:
+The semantic–functional evaluation calls an LLM judge and requires an OpenAI API
+key (never commit keys):
 
 ```python
 import os
-os.environ["OPENAI_API_KEY"] = "TU_API_KEY"
+os.environ["OPENAI_API_KEY"] = "..."   # or a local .env (gitignored)
 ```
 
-o mediante un archivo `.env` local, excluido por `.gitignore`.
+## Citation
 
----
+If you use this material, please cite the associated paper:
 
-## 📄 Paper
+> J. M. Fernández, S. Burdisso, M. Errecalde. *Remembering the Flow: Retrieval
+> with Calibrated Dynamic Turn Representations for Conversational Memory.* CACIC 2026.
 
-El artículo asociado se encuentra en la carpeta:
+## Acknowledgment
 
-```text
-paper/
-```
-
-Título:
-
-**Búsqueda aproximada de vecinos sobre embeddings estáticos y acumulativos para memoria conversacional en diálogos orientados a tareas**
-
----
-
-## 🧰 Dependencias principales
-
-- Python 3.10+
-- NumPy
-- Pandas
-- FAISS
-- Sentence Transformers
-- Scikit-learn
-- UMAP
-- Matplotlib
-- OpenAI API
-
----
-
-## 👤 Autor
-
-**Juan Manuel Fernández**  
-Doctorado en Ciencias de la Computación  
-Universidad Nacional de San Luis (UNSL)  
+This work began as a doctoral course project at the Universidad Nacional de San
+Luis (UNSL) and is released as the experimental companion to the paper.

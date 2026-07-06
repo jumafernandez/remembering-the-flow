@@ -1,18 +1,26 @@
-# Datos del proyecto
+# Data
 
-Este directorio está destinado a almacenar los datos utilizados durante los experimentos del trabajo final.
+Local inputs required to reproduce the experiments. Heavy artifacts are **not**
+versioned (size) and are ignored via `.gitignore`; keep them here locally.
 
-Los experimentos se basan en el dataset **MultiWOZ 2.2**, ampliamente utilizado en investigación sobre sistemas de diálogo orientados a tareas.
+The experimental collection is derived from **Dialog2Flow** (Burdisso et al.,
+2024), which unifies several task-oriented dialogue corpora (e.g., MultiWOZ,
+Schema-Guided Dialogue) under a common format. From it we retain 101,021 complete
+dialogues (1,000,023 turns).
 
-Debido al tamaño de los archivos, es posible que los datos **no se encuentren visibles en el repositorio en GitHub**.  
-Los datasets utilizados durante los experimentos se mantienen en el entorno local y se encuentran ignorados en el versionado mediante el archivo `.gitignore`.
+Expected local artifacts:
 
-Este directorio se utiliza para almacenar las versiones procesadas del dataset utilizadas para:
+```
+data/
+├── dialogs-2.0.pkl                     # processed dialogues / turns
+├── ids.npy                             # dialogue / turn identifiers
+├── embeddings_minilm.npy               # static turn embeddings (all-MiniLM-L6-v2)
+├── embeddings_mpnet.npy                # static turn embeddings (all-mpnet-base-v2)
+├── embeddings_dialog2flow.npy          # static turn embeddings (dialog2flow-joint-bert-base)
+├── accumulative_embeddings_minilm.npy  # normalized-cumulative states
+├── accumulative_embeddings_mpnet.npy
+└── accumulative_embeddings_dialog2flow.npy
+```
 
-- generación de embeddings de turno  
-- construcción de estados latentes dinámicos de diálogo  
-- evaluación de métodos de búsqueda aproximada de vecinos (ANN)
-
-El dataset original puede obtenerse desde:
-
-https://github.com/budzianowski/multiwoz
+Sources: Dialog2Flow — <https://github.com/idiap/dialog2flow> · MultiWOZ —
+<https://github.com/budzianowski/multiwoz>
