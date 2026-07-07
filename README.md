@@ -1,7 +1,7 @@
 # remembering-the-flow
 
 Companion code, notebooks, and experimental results for the paper **"Remembering
-the Flow: Retrieval with Calibrated Dynamic Turn Representations for
+the Flow: Retrieval with Dynamic Turn Representations for
 Conversational Memory."**
 
 Approximate nearest neighbor (**ANN**) retrieval over **static**, **cumulative**,
@@ -96,7 +96,7 @@ os.environ["OPENAI_API_KEY"] = "..."   # or a local .env (gitignored)
 If you use this material, please cite the associated paper:
 
 > J. M. Fernández, S. Burdisso, M. Errecalde. *Remembering the Flow: Retrieval
-> with Calibrated Dynamic Turn Representations for Conversational Memory.* CACIC 2026.
+> with Dynamic Turn Representations for Conversational Memory.* CACIC 2026.
 
 ## Acknowledgment
 
